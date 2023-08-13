@@ -1,4 +1,4 @@
-package com.ua.kpi.DevelopmentAutomation;
+package com.ua.kpi.developmentautomation;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
