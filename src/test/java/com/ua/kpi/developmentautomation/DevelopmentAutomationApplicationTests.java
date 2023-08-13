@@ -1,4 +1,4 @@
-package com.ua.kpi.DevelopmentAutomation;
+package com.ua.kpi.developmentautomation;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
