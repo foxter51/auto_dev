@@ -21,6 +21,9 @@ public class Epic extends TimeStamp {
 
     private String description;
 
+    @ManyToOne
+    private ProductBacklog productBacklog;
+
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
