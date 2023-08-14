@@ -25,6 +25,9 @@ public class Project extends TimeStamp {
     @OneToMany
     private List<Sprint> sprints;
 
+    @OneToOne
+    private Sprint currentSprint;
+
     @ManyToOne
     private Team team;
 }

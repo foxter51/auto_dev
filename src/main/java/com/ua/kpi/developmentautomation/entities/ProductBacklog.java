@@ -16,6 +16,9 @@ public class ProductBacklog {
 
     private String description;
 
+    @OneToOne
+    private Project project;
+
     @ManyToOne
     private AppUser owner;
 
