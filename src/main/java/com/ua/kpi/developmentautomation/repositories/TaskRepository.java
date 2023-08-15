@@ -3,9 +3,11 @@ package com.ua.kpi.developmentautomation.repositories;
 import com.ua.kpi.developmentautomation.entities.Task;
 import com.ua.kpi.developmentautomation.entities.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findTasksByAssigneeIdAndUserStory_Epic_ProductBacklog_ProjectId(Long assigneeId, Long projectId);
     List<Task> findTasksByUserStory_Epic_ProductBacklog_ProjectId(Long projectId);
