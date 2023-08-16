@@ -1,58 +1,69 @@
 package com.ua.kpi.developmentautomation.services;
 
-import com.ua.kpi.developmentautomation.entities.AppUser;
-import com.ua.kpi.developmentautomation.repositories.AppUserRepository;
-import com.ua.kpi.developmentautomation.security.UserDetailsImpl;
-import jakarta.transaction.Transactional;
+import com.ua.kpi.developmentautomation.dto.CredentialsDto;
+import com.ua.kpi.developmentautomation.dto.RegisterCredentialsDto;
+import com.ua.kpi.developmentautomation.dto.UserDto;
+import com.ua.kpi.developmentautomation.entities.User;
+import com.ua.kpi.developmentautomation.exceptions.AppException;
+import com.ua.kpi.developmentautomation.mappers.UserMapper;
+import com.ua.kpi.developmentautomation.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.CharBuffer;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsService {
 
-    protected final AppUserRepository repo;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    protected final UserRepository repo;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser user = repo.findAppUserByUsername(username);
-        if(user == null) throw new UsernameNotFoundException("User not found!");
-        return UserDetailsImpl.build(user);
+    public UserDto findUserByUsername(String username){
+        User user = repo.findByUsername(username)
+                .orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
+        return userMapper.toUserDto(user);
     }
 
-    public AppUser registerUser(AppUser newUser){
-        if(repo.findAppUserByUsername(newUser.getUsername()) == null){
-            newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
-            return repo.save(newUser);
+    public UserDto login(CredentialsDto credentialsDto){
+        User user = repo.findByUsername(credentialsDto.getUsername())
+                .orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
+
+        if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())){
+            return userMapper.toUserDto(user);
         }
-        return null;
+        throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
     }
 
-    public boolean login(String username, String password) {
-        AppUser user = repo.findAppUserByUsername(username);
-        if (user == null) {
-            return false;
-        } else return bCryptPasswordEncoder.matches(password, user.getPassword());
+    public UserDto register(RegisterCredentialsDto registerCredentialsDto){
+        if (repo.existsByUsername(registerCredentialsDto.getUsername())){
+            throw new AppException("User with this login already exists", HttpStatus.BAD_REQUEST);
+        }
+        if (repo.existsByEmail(registerCredentialsDto.getEmail())){
+            throw new AppException("User with this email already exists", HttpStatus.BAD_REQUEST);
+        }
+
+        User user = userMapper.registerToUser(registerCredentialsDto);
+        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(registerCredentialsDto.getPassword())));
+        User savedUser = repo.save(user);
+
+        return userMapper.toUserDto(savedUser);
     }
 
-    public List<AppUser> getAllUsers(){
+    public List<User> getAllUsers(){
         return repo.findAll();
     }
 
-    public Optional<AppUser> getUserById(Long id){
+    public Optional<User> getUserById(Long id){
         return repo.findById(id);
     }
 
-    public AppUser saveUser(AppUser user){
+    public User saveUser(User user){
         return repo.save(user);
     }
 

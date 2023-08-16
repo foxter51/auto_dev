@@ -30,7 +30,7 @@ public class UserStory extends TimeStamp {
     private Epic epic;
 
     @ManyToOne
-    private AppUser owner;
+    private User owner;
 
     @OneToMany
     private List<Task> tasks;

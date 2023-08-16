@@ -18,5 +18,5 @@ public class Team {
     private String name;
 
     @OneToMany
-    private List<AppUser> members;
+    private List<User> members;
 }

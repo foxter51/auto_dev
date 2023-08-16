@@ -20,7 +20,7 @@ public class ProductBacklog {
     private Project project;
 
     @ManyToOne
-    private AppUser owner;
+    private User owner;
 
     @OneToMany
     private List<Epic> epics;

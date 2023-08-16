@@ -1,6 +1,6 @@
 package com.ua.kpi.developmentautomation.controllers;
 
-import com.ua.kpi.developmentautomation.entities.AppUser;
+import com.ua.kpi.developmentautomation.entities.User;
 import com.ua.kpi.developmentautomation.services.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -11,19 +11,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class AppUserController {
+public class UserController {
 
     private final CustomUserDetailsService userDetailsService;
     private final ModelMapper modelMapper;
 
     @GetMapping()
-    public ResponseEntity<List<AppUser>> getAllUsers(){
+    public ResponseEntity<List<User>> getAllUsers(){
         try{
-            List<AppUser> users = userDetailsService.getAllUsers();
+            List<User> users = userDetailsService.getAllUsers();
             return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
         }
         catch (Exception e){
@@ -32,9 +31,9 @@ public class AppUserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AppUser> getUser(@PathVariable("id") Long id){
+    public ResponseEntity<User> getUser(@PathVariable("id") Long id){
         try{
-            Optional<AppUser> user = userDetailsService.getUserById(id);
+            Optional<User> user = userDetailsService.getUserById(id);
             return user.isPresent() ? ResponseEntity.ok(user.get()) : ResponseEntity.noContent().build();
         }
         catch (Exception e){
@@ -43,11 +42,11 @@ public class AppUserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AppUser> updateUser(@PathVariable("id") Long id, @RequestBody AppUser updatedUser){
+    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User updatedUser){
         try{
-            Optional<AppUser> oldUser = userDetailsService.getUserById(id);
+            Optional<User> oldUser = userDetailsService.getUserById(id);
             if(oldUser.isPresent()){
-                AppUser user = oldUser.get();
+                User user = oldUser.get();
                 modelMapper.map(updatedUser, user);
                 return ResponseEntity.ok(userDetailsService.saveUser(user));
             } else return ResponseEntity.notFound().build();

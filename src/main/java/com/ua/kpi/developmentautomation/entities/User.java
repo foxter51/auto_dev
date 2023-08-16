@@ -9,7 +9,8 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-public class AppUser extends TimeStamp{
+@Table(name = "app_user")
+public class User extends TimeStamp{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
