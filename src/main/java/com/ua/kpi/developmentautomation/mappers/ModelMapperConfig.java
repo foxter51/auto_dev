@@ -1,4 +1,4 @@
-package com.ua.kpi.developmentautomation.configs;
+package com.ua.kpi.developmentautomation.mappers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

@@ -28,7 +28,7 @@ public class Task extends TimeStamp {
     private UserStory userStory;
 
     @ManyToOne
-    private AppUser assignee;
+    private User assignee;
 
     @Enumerated(EnumType.STRING)
     private Status status;

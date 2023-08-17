@@ -1,27 +1,37 @@
 package com.ua.kpi.developmentautomation.configs;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @EnableWebMvc
 @Configuration
-public class MvcConfig implements WebMvcConfigurer {
+public class MvcConfig {
 
-    @Override
-    public void addResourceHandlers(
-            ResourceHandlerRegistry registry) {
-
-        registry.addResourceHandler("/static/**")
-                .addResourceLocations("/WEB-INF/view/react/build/static/");
-        registry.addResourceHandler("/*.js")
-                .addResourceLocations("/WEB-INF/view/react/build/");
-        registry.addResourceHandler("/*.json")
-                .addResourceLocations("/WEB-INF/view/react/build/");
-        registry.addResourceHandler("/*.ico")
-                .addResourceLocations("/WEB-INF/view/react/build/");
-        registry.addResourceHandler("/index.html")
-                .addResourceLocations("/WEB-INF/view/react/build/index.html");
+    @Bean
+    public FilterRegistrationBean corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:8081");
+        config.setAllowedHeaders(List.of(
+                HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE, HttpHeaders.ACCEPT
+        ));
+        config.setAllowedMethods(List.of(
+                HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(), HttpMethod.DELETE.name()
+        ));
+        config.setMaxAge(3600L);
+        source.registerCorsConfiguration("/**", config);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+        bean.setOrder(-102);
+        return bean;
     }
 }
