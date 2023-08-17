@@ -5,7 +5,6 @@ export default class WelcomeContent extends React.Component {
         return (
             <div>
                 <h1>Welcome</h1>
-                <p>Login</p>
             </div>
         )
     }

@@ -1,20 +1,13 @@
 import axios from "axios"
+import AuthService from "./services/AuthService"
 
 axios.defaults.baseURL = 'http://localhost:8080'
 axios.defaults.headers.post["Content-Type"] = 'application/json'
 
-export const getAuthToken = () =>{
-    return window.localStorage.getItem("auth_token")
-}
-
-export const setAuthToken = (token) =>{
-    window.localStorage.setItem("auth_token", token)
-}
-
 export const request = (method, url, data) => {
     let headers = {}
-    if (getAuthToken() !== null && getAuthToken() !== "null"){
-        headers = {"Authorization": `Bearer ${getAuthToken()}`}
+    if (AuthService.getAuthToken() !== null && AuthService.getAuthToken() !== "null"){
+        headers = {"Authorization": `Bearer ${AuthService.getAuthToken()}`}
     }
 
     return axios({

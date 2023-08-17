@@ -1,5 +1,7 @@
 import * as React from "react"
 import classNames from "classnames"
+import AuthService from "../services/AuthService"
+import {Navigate} from "react-router"
 
 export default class LoginForm extends React.Component {
 
@@ -12,8 +14,7 @@ export default class LoginForm extends React.Component {
             username: "",
             email: "",
             password: "",
-            onLogin: props.onLogin,
-            onRegister: props.onRegister
+            error: null
         }
     }
 
@@ -21,71 +22,88 @@ export default class LoginForm extends React.Component {
         let name = event.target.name
         let value = event.target.value;
         this.setState({[name]: value})
-        this.props.clearError()
+        this.error = null
     }
 
     onSubmitLogin = (e) => {
-        this.state.onLogin(e, this.state.username, this.state.password)
+        e.preventDefault();
+        AuthService.login(
+            this.state.username,
+            this.state.password
+        ).catch((error) => {
+            this.setState({error: error.response.data.message})})
     }
 
     onSubmitRegister = (e) => {
-        this.state.onRegister(e, this.state.firstName, this.state.lastName, this.state.username, this.state.email,
-            this.state.password)
+        e.preventDefault();
+        AuthService.register(
+            this.state.firstName,
+            this.state.lastname,
+            this.state.username,
+            this.state.email,
+            this.state.password
+        ).catch((error) => {
+            this.setState({error: error.response.data.message})})
     }
 
     render() {
+        if (AuthService.isAuthenticated()) return <Navigate to="/"/>
         return (
-            <div className="card col-4">
-                <ul className="nav nav-pills nav-justified">
-                    <li className="nav-item">
-                        <button className={classNames("nav-link", this.state.active === "login" ? "active" : "")} id="tab-login"
-                                onClick={() => {this.setState({active: "login"}); this.props.clearError()}}>Login</button>
-                    </li>
-                    <li className="nav-item">
-                        <button className={classNames("nav-link", this.state.active === "register" ? "active" : "")} id="tab-register"
-                                onClick={() => {this.setState({active: "register", error: null}); this.props.clearError()}}>Register</button>
-                    </li>
-                </ul>
-                <div className="card-body tab-content">
-                    <div className={classNames("tab-pane", "fade", this.state.active === "login" ? "show active" : "")}>
-                        <form onSubmit={this.onSubmitLogin}>
-                            <div className="form-outline">
-                                <label className="form-label" htmlFor="loginName">Username</label>
-                                <input type="text" id="loginName" name="username" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
+            <div className="d-flex align-content-center">
+                <div className="container d-flex justify-content-center">
+                    <div className="card col-4">
+                        <ul className="nav nav-pills nav-justified">
+                            <li className="nav-item">
+                                <button className={classNames("nav-link", this.state.active === "login" ? "active" : "")} id="tab-login"
+                                        onClick={() => {this.setState({active: "login"}); this.error = null}}>Login</button>
+                            </li>
+                            <li className="nav-item">
+                                <button className={classNames("nav-link", this.state.active === "register" ? "active" : "")} id="tab-register"
+                                        onClick={() => {this.setState({active: "register", error: null}); this.error = null}}>Register</button>
+                            </li>
+                        </ul>
+                        <div className="card-body tab-content">
+                            <div className={classNames("tab-pane", "fade", this.state.active === "login" ? "show active" : "")}>
+                                <form onSubmit={this.onSubmitLogin}>
+                                    <div className="form-outline">
+                                        <label className="form-label" htmlFor="loginName">Username</label>
+                                        <input type="text" id="loginName" name="username" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
+                                    </div>
+                                    <div className="form-outline">
+                                        <label className="form-label" htmlFor="loginPassword">Password</label>
+                                        <input type="password" id="loginPassword" name="password" className="form-control" maxLength="64" onChange={this.onChangeHandler}/>
+                                    </div>
+                                    <button type="submit" className="btn btn-primary">Sign in</button>
+                                </form>
                             </div>
-                            <div className="form-outline">
-                                <label className="form-label" htmlFor="loginPassword">Password</label>
-                                <input type="password" id="loginPassword" name="password" className="form-control" maxLength="64" onChange={this.onChangeHandler}/>
+                            <div className={classNames("tab-pane", "fade", this.state.active === "register" ? "show active" : "")}>
+                                <form onSubmit={this.onSubmitRegister}>
+                                    <div className="form-outline">
+                                        <label className="form-label" htmlFor="firstName">Firstname</label>
+                                        <input type="text" id="firstName" name="firstName" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
+                                    </div>
+                                    <div className="form-outline">
+                                        <label className="form-label" htmlFor="lastName">Lastname</label>
+                                        <input type="text" id="lastName" name="lastName" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
+                                    </div>
+                                    <div className="form-outline">
+                                        <label className="form-label" htmlFor="registerLogin">Username</label>
+                                        <input type="text" id="registerLogin" name="username" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
+                                    </div>
+                                    <div className="form-outline">
+                                        <label className="form-label" htmlFor="registerEmail">Email</label>
+                                        <input type="email" id="registerEmail" name="email" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
+                                    </div>
+                                    <div className="form-outline">
+                                        <label className="form-label" htmlFor="registerPassword">Password</label>
+                                        <input type="password" id="registerPassword" name="password" className="form-control" maxLength="64" onChange={this.onChangeHandler}/>
+                                    </div>
+                                    <button type="submit" className="btn btn-primary">Sign up</button>
+                                </form>
                             </div>
-                            <button type="submit" className="btn btn-primary">Sign in</button>
-                        </form>
+                            <div>{this.state.error}</div>
+                        </div>
                     </div>
-                    <div className={classNames("tab-pane", "fade", this.state.active === "register" ? "show active" : "")}>
-                        <form onSubmit={this.onSubmitRegister}>
-                            <div className="form-outline">
-                                <label className="form-label" htmlFor="firstName">Firstname</label>
-                                <input type="text" id="firstName" name="firstName" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
-                            </div>
-                            <div className="form-outline">
-                                <label className="form-label" htmlFor="lastName">Lastname</label>
-                                <input type="text" id="lastName" name="lastName" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
-                            </div>
-                            <div className="form-outline">
-                                <label className="form-label" htmlFor="registerLogin">Username</label>
-                                <input type="text" id="registerLogin" name="username" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
-                            </div>
-                            <div className="form-outline">
-                                <label className="form-label" htmlFor="registerEmail">Email</label>
-                                <input type="email" id="registerEmail" name="email" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
-                            </div>
-                            <div className="form-outline">
-                                <label className="form-label" htmlFor="registerPassword">Password</label>
-                                <input type="password" id="registerPassword" name="password" className="form-control" maxLength="64" onChange={this.onChangeHandler}/>
-                            </div>
-                            <button type="submit" className="btn btn-primary">Sign up</button>
-                        </form>
-                    </div>
-                    {this.props.error && <div>{this.props.error}</div>}
                 </div>
             </div>
         )
