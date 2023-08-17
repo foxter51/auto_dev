@@ -21,6 +21,7 @@ export default class LoginForm extends React.Component {
         let name = event.target.name
         let value = event.target.value;
         this.setState({[name]: value})
+        this.props.clearError()
     }
 
     onSubmitLogin = (e) => {
@@ -38,11 +39,11 @@ export default class LoginForm extends React.Component {
                 <ul className="nav nav-pills nav-justified">
                     <li className="nav-item">
                         <button className={classNames("nav-link", this.state.active === "login" ? "active" : "")} id="tab-login"
-                                onClick={() => this.setState({active: "login"})}>Login</button>
+                                onClick={() => {this.setState({active: "login"}); this.props.clearError()}}>Login</button>
                     </li>
                     <li className="nav-item">
                         <button className={classNames("nav-link", this.state.active === "register" ? "active" : "")} id="tab-register"
-                                onClick={() => this.setState({active: "register"})}>Register</button>
+                                onClick={() => {this.setState({active: "register", error: null}); this.props.clearError()}}>Register</button>
                     </li>
                 </ul>
                 <div className="card-body tab-content">
@@ -84,6 +85,7 @@ export default class LoginForm extends React.Component {
                             <button type="submit" className="btn btn-primary">Sign up</button>
                         </form>
                     </div>
+                    {this.props.error && <div>{this.props.error}</div>}
                 </div>
             </div>
         )
