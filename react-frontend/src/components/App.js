@@ -1,7 +1,8 @@
 import './App.css'
 import logo from '../logo.svg'
 import Header from './Header'
-import AppContent from "./AppContent";
+import AppContent from "./AppContent"
+
 
 function App(){
     return (
