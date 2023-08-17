@@ -10,7 +10,8 @@ export default class AppContent extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isAuthenticated: false
+            isAuthenticated: false,
+            error: null
         }
     }
 
@@ -25,7 +26,7 @@ export default class AppContent extends React.Component {
             setAuthToken(response.data.token)
             this.setState({isAuthenticated: true})}
         ).catch((error) => {
-            this.setState({isAuthenticated: false})
+            this.setState({isAuthenticated: false, error: error.response.data.message})
         })
     }
 
@@ -37,8 +38,12 @@ export default class AppContent extends React.Component {
             setAuthToken(response.data.token)
             this.setState({isAuthenticated: true})}
         ).catch((error) => {
-            this.setState({isAuthenticated: false})
+            this.setState({isAuthenticated: false, error: error.response.data.message})
         })
+    }
+
+    clearError = () =>{
+        this.setState({error: null})
     }
 
     render() {
@@ -47,7 +52,8 @@ export default class AppContent extends React.Component {
                 <Buttons isAuthenticated={this.state.isAuthenticated} logout={this.logout}/>
                 {this.state.isAuthenticated === false && <WelcomeContent/>}
                 {this.state.isAuthenticated === true && <AuthContent/>}
-                {this.state.isAuthenticated === false && <LoginForm onLogin={this.onLogin} onRegister={this.onRegister}/>}
+                {this.state.isAuthenticated === false && <LoginForm onLogin={this.onLogin} onRegister={this.onRegister}
+                                                            error={this.state.error} clearError={this.clearError}/>}
             </div>
         )
     }
