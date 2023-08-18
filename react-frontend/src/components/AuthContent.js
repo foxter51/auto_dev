@@ -1,29 +1,31 @@
 import * as React from "react"
 
-import { request } from "../axios_helper"
+import { request } from "../utils/axios_helper"
+import {useEffect, useState} from "react"
+import LoadingEffect from "./LoadingEffect"
 
-export default class AuthContent extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            data : []
-        }
-    }
+export default function AuthContent () {
+    const [data, setData] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
-    componentDidMount() {
+    useEffect(() => {
         request(
             "GET", "/messages", {}
         ).then((response) => {
-            console.log(response.data)
-            this.setState({data : response.data})
-        })
+            setData(response.data)
+            setLoading(false)
+        }).catch((error) =>
+            setError(error.response.data.message))
+    }, [])
+
+    if(loading) {
+        return <LoadingEffect/>
     }
 
-    render() {
-        return (
-            <div>
-                {this.state.data && this.state.data.map((line) => <p>{line}</p>)}
-            </div>
-        )
-    }
+    return (
+        <div>
+            {data ? data.map((line) => <p>{line}</p>) : error}
+        </div>
+    )
 }

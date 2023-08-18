@@ -1,4 +1,4 @@
-import {request} from "../axios_helper"
+import {request} from "../utils/axios_helper"
 
 class AuthService {
 
@@ -11,6 +11,14 @@ class AuthService {
         window.location.reload()
     }
 
+    getAuthUserId() {
+        return window.localStorage.getItem("user_id")
+    }
+
+    setAuthUserId(id) {
+        window.localStorage.setItem("user_id", id)
+    }
+
     login(username, password) {
         return request(
             "POST",
@@ -18,6 +26,7 @@ class AuthService {
             {      username: username,
                         password: password}
         ).then((response) => {
+            this.setAuthUserId(response.data.id)
             this.setAuthToken(response.data.token)})
     }
 
@@ -31,11 +40,13 @@ class AuthService {
                     email: email,
                     password: password}
         ).then((response) => {
+            this.setAuthUserId(response.data.id)
             this.setAuthToken(response.data.token)})
     }
 
     logout() {
         window.localStorage.removeItem("auth_token")
+        window.localStorage.removeItem("user_id")
         window.location.reload()
     }
 

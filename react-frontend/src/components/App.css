@@ -9,6 +9,12 @@
     color: white;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+.left-align{
+    display: flex;
+    align-items: center;
 }
 
 html, body {
