@@ -26,7 +26,7 @@ public class MvcConfig {
                 HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE, HttpHeaders.ACCEPT
         ));
         config.setAllowedMethods(List.of(
-                HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(), HttpMethod.DELETE.name()
+                HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(), HttpMethod.PATCH.name(), HttpMethod.DELETE.name()
         ));
         config.setMaxAge(3600L);
         source.registerCorsConfiguration("/**", config);
