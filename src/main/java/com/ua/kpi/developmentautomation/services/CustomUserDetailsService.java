@@ -57,17 +57,26 @@ public class CustomUserDetailsService {
         return userMapper.toUserDto(savedUser);
     }
 
-    public User updateUser(User updatedUser, User oldUser){
-        if(!updatedUser.getUsername().equals(oldUser.getUsername())
-                && (repo.existsByUsername(updatedUser.getUsername()))){
+    public User updateUser(User updatedUser, Long oldUserId){
+        Optional<User> user = getUserById(oldUserId);
+
+        if(user.isPresent()) {
+            User oldUser = user.get();
+
+            if(!updatedUser.getUsername().equals(oldUser.getUsername())
+                    && (repo.existsByUsername(updatedUser.getUsername()))){
                 throw new AppException("User with this username already exists", HttpStatus.BAD_REQUEST);
-        }
-        if(!updatedUser.getEmail().equals(oldUser.getEmail())
-                && (repo.existsByEmail(updatedUser.getEmail()))){
+            }
+            if(!updatedUser.getEmail().equals(oldUser.getEmail())
+                    && (repo.existsByEmail(updatedUser.getEmail()))){
                 throw new AppException("User with this email already exists", HttpStatus.BAD_REQUEST);
+            }
+
+            modelMapper.map(updatedUser, oldUser);
+            return repo.save(oldUser);
         }
-        modelMapper.map(updatedUser, oldUser);
-        return repo.save(oldUser);
+
+        throw new AppException("User not found", HttpStatus.BAD_REQUEST);
     }
 
     public List<User> getAllUsers(){

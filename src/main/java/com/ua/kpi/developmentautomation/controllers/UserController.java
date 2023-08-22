@@ -3,7 +3,6 @@ package com.ua.kpi.developmentautomation.controllers;
 import com.ua.kpi.developmentautomation.entities.User;
 import com.ua.kpi.developmentautomation.services.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,43 +19,24 @@ public class UserController {
 
     @GetMapping()
     public ResponseEntity<List<User>> getAllUsers(){
-        try{
-            List<User> users = userDetailsService.getAllUsers();
-            return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
-        }
-        catch (Exception e){
-            return ResponseEntity.internalServerError().build();
-        }
+        List<User> users = userDetailsService.getAllUsers();
+        return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") Long id){
-        try{
-            Optional<User> user = userDetailsService.getUserById(id);
-            return user.isPresent() ? ResponseEntity.ok(user.get()) : ResponseEntity.noContent().build();
-        }
-        catch (Exception e){
-            return ResponseEntity.internalServerError().build();
-        }
+        Optional<User> user = userDetailsService.getUserById(id);
+        return user.isPresent() ? ResponseEntity.ok(user.get()) : ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User updatedUser){
-        Optional<User> oldUser = userDetailsService.getUserById(id);
-        if(oldUser.isPresent()){
-            User user = oldUser.get();
-            return ResponseEntity.ok(userDetailsService.updateUser(updatedUser, user));
-        } else return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(userDetailsService.updateUser(updatedUser, id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> removeUser(@PathVariable("id") Long id){
-        try{
-            userDetailsService.deleteUser(id);
-            return ResponseEntity.noContent().build();
-        }
-        catch (Exception e){
-            return ResponseEntity.internalServerError().build();
-        }
+        userDetailsService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }

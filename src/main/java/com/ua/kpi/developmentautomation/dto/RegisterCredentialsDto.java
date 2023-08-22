@@ -12,6 +12,6 @@ public class RegisterCredentialsDto {
     private String username;
     private String email;
     private char[] password;
-    private String lastname;
     private String firstname;
+    private String lastname;
 }
