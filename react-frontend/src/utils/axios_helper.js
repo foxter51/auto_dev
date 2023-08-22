@@ -1,5 +1,5 @@
 import axios from "axios"
-import AuthService from "./services/AuthService"
+import AuthService from "../services/AuthService"
 
 axios.defaults.baseURL = 'http://localhost:8080'
 axios.defaults.headers.post["Content-Type"] = 'application/json'
