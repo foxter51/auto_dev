@@ -17,7 +17,6 @@ import java.util.Optional;
 public class UserController {
 
     private final CustomUserDetailsService userDetailsService;
-    private final ModelMapper modelMapper;
 
     @GetMapping()
     public ResponseEntity<List<User>> getAllUsers(){
@@ -41,19 +40,13 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User updatedUser){
-        try{
-            Optional<User> oldUser = userDetailsService.getUserById(id);
-            if(oldUser.isPresent()){
-                User user = oldUser.get();
-                modelMapper.map(updatedUser, user);
-                return ResponseEntity.ok(userDetailsService.saveUser(user));
-            } else return ResponseEntity.notFound().build();
-        }
-        catch (Exception e){
-            return ResponseEntity.internalServerError().build();
-        }
+        Optional<User> oldUser = userDetailsService.getUserById(id);
+        if(oldUser.isPresent()){
+            User user = oldUser.get();
+            return ResponseEntity.ok(userDetailsService.updateUser(updatedUser, user));
+        } else return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

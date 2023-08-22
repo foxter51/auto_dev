@@ -8,6 +8,7 @@ import com.ua.kpi.developmentautomation.exceptions.AppException;
 import com.ua.kpi.developmentautomation.mappers.UserMapper;
 import com.ua.kpi.developmentautomation.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class CustomUserDetailsService {
     protected final UserRepository repo;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
     public UserDto findUserByUsername(String username){
         User user = repo.findByUsername(username)
@@ -42,7 +44,7 @@ public class CustomUserDetailsService {
 
     public UserDto register(RegisterCredentialsDto registerCredentialsDto){
         if (repo.existsByUsername(registerCredentialsDto.getUsername())){
-            throw new AppException("User with this login already exists", HttpStatus.BAD_REQUEST);
+            throw new AppException("User with this username already exists", HttpStatus.BAD_REQUEST);
         }
         if (repo.existsByEmail(registerCredentialsDto.getEmail())){
             throw new AppException("User with this email already exists", HttpStatus.BAD_REQUEST);
@@ -53,6 +55,19 @@ public class CustomUserDetailsService {
         User savedUser = repo.save(user);
 
         return userMapper.toUserDto(savedUser);
+    }
+
+    public User updateUser(User updatedUser, User oldUser){
+        if(!updatedUser.getUsername().equals(oldUser.getUsername())
+                && (repo.existsByUsername(updatedUser.getUsername()))){
+                throw new AppException("User with this username already exists", HttpStatus.BAD_REQUEST);
+        }
+        if(!updatedUser.getEmail().equals(oldUser.getEmail())
+                && (repo.existsByEmail(updatedUser.getEmail()))){
+                throw new AppException("User with this email already exists", HttpStatus.BAD_REQUEST);
+        }
+        modelMapper.map(updatedUser, oldUser);
+        return repo.save(oldUser);
     }
 
     public List<User> getAllUsers(){
