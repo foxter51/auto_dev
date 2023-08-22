@@ -9,8 +9,8 @@ export default class LoginForm extends React.Component {
         super(props)
         this.state = {
             active: "login",
-            firstName: "",
-            lastName: "",
+            firstname: "",
+            lastname: "",
             username: "",
             email: "",
             password: "",
@@ -37,7 +37,7 @@ export default class LoginForm extends React.Component {
     onSubmitRegister = (e) => {
         e.preventDefault();
         AuthService.register(
-            this.state.firstName,
+            this.state.firstname,
             this.state.lastname,
             this.state.username,
             this.state.email,
@@ -67,11 +67,11 @@ export default class LoginForm extends React.Component {
                                 <form onSubmit={this.onSubmitLogin}>
                                     <div className="form-outline">
                                         <label className="form-label" htmlFor="loginName">Username</label>
-                                        <input type="text" id="loginName" name="username" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
+                                        <input type="text" id="loginName" name="username" className="form-control" maxLength="32" required onChange={this.onChangeHandler}/>
                                     </div>
                                     <div className="form-outline">
                                         <label className="form-label" htmlFor="loginPassword">Password</label>
-                                        <input type="password" id="loginPassword" name="password" className="form-control" maxLength="64" onChange={this.onChangeHandler}/>
+                                        <input type="password" id="loginPassword" name="password" className="form-control" maxLength="64" required onChange={this.onChangeHandler}/>
                                     </div>
                                     <button type="submit" className="btn btn-primary">Sign in</button>
                                 </form>
@@ -80,23 +80,23 @@ export default class LoginForm extends React.Component {
                                 <form onSubmit={this.onSubmitRegister}>
                                     <div className="form-outline">
                                         <label className="form-label" htmlFor="firstName">Firstname</label>
-                                        <input type="text" id="firstName" name="firstName" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
+                                        <input type="text" id="firstName" name="firstname" className="form-control" maxLength="32" required onChange={this.onChangeHandler}/>
                                     </div>
                                     <div className="form-outline">
                                         <label className="form-label" htmlFor="lastName">Lastname</label>
-                                        <input type="text" id="lastName" name="lastName" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
+                                        <input type="text" id="lastName" name="lastname" className="form-control" maxLength="32" required onChange={this.onChangeHandler}/>
                                     </div>
                                     <div className="form-outline">
                                         <label className="form-label" htmlFor="registerLogin">Username</label>
-                                        <input type="text" id="registerLogin" name="username" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
+                                        <input type="text" id="registerLogin" name="username" className="form-control" maxLength="32" required onChange={this.onChangeHandler}/>
                                     </div>
                                     <div className="form-outline">
                                         <label className="form-label" htmlFor="registerEmail">Email</label>
-                                        <input type="email" id="registerEmail" name="email" className="form-control" maxLength="32" onChange={this.onChangeHandler}/>
+                                        <input type="email" id="registerEmail" name="email" className="form-control" maxLength="32" required onChange={this.onChangeHandler}/>
                                     </div>
                                     <div className="form-outline">
                                         <label className="form-label" htmlFor="registerPassword">Password</label>
-                                        <input type="password" id="registerPassword" name="password" className="form-control" maxLength="64" onChange={this.onChangeHandler}/>
+                                        <input type="password" id="registerPassword" name="password" className="form-control" maxLength="64" required onChange={this.onChangeHandler}/>
                                     </div>
                                     <button type="submit" className="btn btn-primary">Sign up</button>
                                 </form>
