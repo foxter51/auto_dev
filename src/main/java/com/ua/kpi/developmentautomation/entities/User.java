@@ -4,7 +4,8 @@ import com.ua.kpi.developmentautomation.entities.base.TimeStamp;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import java.util.Set;
+
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -29,5 +30,5 @@ public class User extends TimeStamp{
     private Team team;
 
     @OneToMany
-    private Set<Role> roles;
+    private List<UserRole> userRoles;
 }
