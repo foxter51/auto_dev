@@ -87,11 +87,7 @@ public class CustomUserDetailsService {
         return repo.findById(id);
     }
 
-    public User saveUser(User user){
-        return repo.save(user);
-    }
-
-    public void deleteUser(Long id){
+    public void deleteUserById(Long id){
         repo.deleteById(id);
     }
 }

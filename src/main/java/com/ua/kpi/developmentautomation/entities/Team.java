@@ -19,4 +19,8 @@ public class Team {
 
     @OneToMany
     private List<UserRole> usersAndRoles;
+
+    public void addUserAndRole(UserRole userAndRole) {
+        usersAndRoles.add(userAndRole);
+    }
 }
