@@ -29,16 +29,16 @@ public class TeamService {
         return teamRepository.findAll();
     }
 
-    public Optional<Team> getTeamById(Long id) {
-        return teamRepository.findById(id);
+    public Optional<Team> getTeamById(Long teamId) {
+        return teamRepository.findById(teamId);
     }
 
     public Team saveTeam(Team team) {
         return teamRepository.save(team);
     }
 
-    public Team updateTeam(Team updatedTeam, Long id) {
-        Optional<Team> team = teamRepository.findById(id);
+    public Team updateTeam(Team updatedTeam, Long teamId) {
+        Optional<Team> team = teamRepository.findById(teamId);
         if (team.isPresent()) {
             Team oldTeam = team.get();
             modelMapper.map(updatedTeam, oldTeam);
@@ -47,12 +47,12 @@ public class TeamService {
         throw new AppException("Team not found", HttpStatus.BAD_REQUEST);
     }
 
-    public void deleteTeamById(Long id) {
-        teamRepository.deleteById(id);
+    public void deleteTeamById(Long teamId) {
+        teamRepository.deleteById(teamId);
     }
 
-    public Team updateTeamMembers(Long id, TeamMemberRequest teamMemberRequest) {
-        Optional<Team> team = teamRepository.findById(id);
+    public Team updateTeamMembers(Long teamId, TeamMemberRequest teamMemberRequest) {
+        Optional<Team> team = teamRepository.findById(teamId);
         Optional<User> user = userDetailsService.getUserById(teamMemberRequest.getMemberId());
         Optional<Role> role = roleService.getRoleById(teamMemberRequest.getMemberId());
 

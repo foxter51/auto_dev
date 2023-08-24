@@ -21,19 +21,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomUserDetailsService {
 
-    protected final UserRepository repo;
+    protected final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
     public UserDto findUserByUsername(String username){
-        User user = repo.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
         return userMapper.toUserDto(user);
     }
 
     public UserDto login(CredentialsDto credentialsDto){
-        User user = repo.findByUsername(credentialsDto.getUsername())
+        User user = userRepository.findByUsername(credentialsDto.getUsername())
                 .orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
 
         if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())){
@@ -43,16 +43,16 @@ public class CustomUserDetailsService {
     }
 
     public UserDto register(RegisterCredentialsDto registerCredentialsDto){
-        if (repo.existsByUsername(registerCredentialsDto.getUsername())){
+        if (userRepository.existsByUsername(registerCredentialsDto.getUsername())){
             throw new AppException("User with this username already exists", HttpStatus.BAD_REQUEST);
         }
-        if (repo.existsByEmail(registerCredentialsDto.getEmail())){
+        if (userRepository.existsByEmail(registerCredentialsDto.getEmail())){
             throw new AppException("User with this email already exists", HttpStatus.BAD_REQUEST);
         }
 
         User user = userMapper.registerToUser(registerCredentialsDto);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(registerCredentialsDto.getPassword())));
-        User savedUser = repo.save(user);
+        User savedUser = userRepository.save(user);
 
         return userMapper.toUserDto(savedUser);
     }
@@ -64,30 +64,30 @@ public class CustomUserDetailsService {
             User oldUser = user.get();
 
             if(!updatedUser.getUsername().equals(oldUser.getUsername())
-                    && (repo.existsByUsername(updatedUser.getUsername()))){
+                    && (userRepository.existsByUsername(updatedUser.getUsername()))){
                 throw new AppException("User with this username already exists", HttpStatus.BAD_REQUEST);
             }
             if(!updatedUser.getEmail().equals(oldUser.getEmail())
-                    && (repo.existsByEmail(updatedUser.getEmail()))){
+                    && (userRepository.existsByEmail(updatedUser.getEmail()))){
                 throw new AppException("User with this email already exists", HttpStatus.BAD_REQUEST);
             }
 
             modelMapper.map(updatedUser, oldUser);
-            return repo.save(oldUser);
+            return userRepository.save(oldUser);
         }
 
         throw new AppException("User not found", HttpStatus.BAD_REQUEST);
     }
 
     public List<User> getAllUsers(){
-        return repo.findAll();
+        return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(Long id){
-        return repo.findById(id);
+    public Optional<User> getUserById(Long userId){
+        return userRepository.findById(userId);
     }
 
-    public void deleteUserById(Long id){
-        repo.deleteById(id);
+    public void deleteUserById(Long userId){
+        userRepository.deleteById(userId);
     }
 }

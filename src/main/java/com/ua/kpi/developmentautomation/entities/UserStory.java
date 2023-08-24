@@ -37,4 +37,8 @@ public class UserStory extends TimeStamp {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
 }

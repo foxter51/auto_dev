@@ -19,4 +19,8 @@ public class SprintBacklog {
 
     @OneToMany
     private List<UserStory> userStories;
+
+    public void addUserStory(UserStory userStory) {
+        this.userStories.add(userStory);
+    }
 }

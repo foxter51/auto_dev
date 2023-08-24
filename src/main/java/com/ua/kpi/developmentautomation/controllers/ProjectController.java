@@ -1,6 +1,8 @@
 package com.ua.kpi.developmentautomation.controllers;
 
+import com.ua.kpi.developmentautomation.entities.ProductBacklog;
 import com.ua.kpi.developmentautomation.entities.Project;
+import com.ua.kpi.developmentautomation.entities.Sprint;
 import com.ua.kpi.developmentautomation.services.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,6 +39,18 @@ public class ProjectController {
     @PatchMapping("/{id}")
     public ResponseEntity<Project> updateProject(@PathVariable("id") Long id, @RequestBody Project updatedProject){
         return ResponseEntity.ok(projectService.updateProject(updatedProject, id));
+    }
+
+    @PostMapping("/{id}/sprints")
+    public ResponseEntity<Project> updateProjectSprints(@PathVariable("id") Long id, @RequestBody Sprint sprint) {
+        return ResponseEntity.ok(projectService.updateProjectSprints(id, sprint));
+    }
+
+    @PatchMapping("/{id}/product_backlog")
+    public ResponseEntity<Project> createProjectProductBacklog(@PathVariable("id") Long id,
+                                                                      @RequestBody ProductBacklog productBacklog,
+                                                                      @RequestParam("owner_id") Long ownerId) {
+        return ResponseEntity.ok(projectService.updateProjectProductBacklog(ownerId, id, productBacklog));
     }
 
     @DeleteMapping("{id}")
