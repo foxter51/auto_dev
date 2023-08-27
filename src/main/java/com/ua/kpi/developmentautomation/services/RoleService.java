@@ -13,7 +13,7 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
 
-    public Optional<Role> getRoleById(Long id){
-        return roleRepository.findById(id);
+    public Optional<Role> getRoleById(Long roleId) {
+        return roleRepository.findById(roleId);
     }
 }

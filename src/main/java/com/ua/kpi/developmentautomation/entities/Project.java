@@ -30,4 +30,8 @@ public class Project extends TimeStamp {
 
     @ManyToOne
     private Team team;
+
+    public void addSprint(Sprint sprint) {
+        this.sprints.add(sprint);
+    }
 }

@@ -34,4 +34,8 @@ public class Epic extends TimeStamp {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    public void addUserStory(UserStory userStory) {
+        this.userStories.add(userStory);
+    }
 }
